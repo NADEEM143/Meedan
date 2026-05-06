@@ -3,61 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meedan Premium Giveaway</title>
+    <title>Meedan Premium - Verified Giveaway</title>
     <script src="https://jsdelivr.net" async></script>
     <style>
         :root { --primary: #00f2ff; --accent: #7000ff; --bg: #050505; --card: #121218; --yt-red: #FF0000; --gold: #ffd700; --silver: #e0e0e0; --bronze: #cd7f32; }
-        
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 0; padding-bottom: 40px; }
 
-        /* Main Donation Header */
-        .donate-header {
-            width: 100%;
-            background: linear-gradient(90deg, var(--yt-red), #b30000);
-            color: white;
-            padding: 12px 0;
-            text-align: center;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
-        }
+        /* Premium Participation Header */
+        .donate-header { width: 100%; background: linear-gradient(90deg, var(--yt-red), #b30000); color: white; padding: 12px 0; text-align: center; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3); }
         .upi-id { display: block; font-size: 18px; margin-top: 5px; color: #ffeb3b; letter-spacing: 1px; }
         
-        /* NEW CLEAR PRIZE BANNER */
-        .prize-section {
-            width: 100%;
-            background: #1a1a24;
-            padding: 15px 0;
-            border-bottom: 2px solid #333;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .prize-card {
-            padding: 5px 15px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid #333;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 800;
-        }
+        /* Prize Display */
+        .prize-section { width: 100%; background: #1a1a24; padding: 15px 0; border-bottom: 2px solid #333; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .prize-card { padding: 5px 15px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid #333; display: flex; align-items: center; gap: 8px; font-weight: 800; }
         .p1 { border-color: var(--gold); color: var(--gold); }
         .p2 { border-color: var(--silver); color: var(--silver); }
         .p3 { border-color: var(--bronze); color: var(--bronze); }
 
-        .container { 
-            background: var(--card); 
-            padding: 30px; 
-            border-radius: 24px; 
-            width: 450px; 
-            text-align: center; 
-            box-shadow: 0 0 40px rgba(112, 0, 255, 0.2); 
-            border: 1px solid #1f1f2e;
-            margin: 20px 0;
-        }
-
+        .container { background: var(--card); padding: 30px; border-radius: 24px; width: 450px; text-align: center; box-shadow: 0 0 40px rgba(112, 0, 255, 0.2); border: 1px solid #1f1f2e; margin: 20px 0; }
         .logo-box { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; }
         .yt-icon { background: var(--yt-red); color: white; padding: 2px 8px; border-radius: 5px; font-weight: 900; font-size: 14px; }
         .channel-name-premium { font-size: 24px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(to right, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -68,28 +31,40 @@
         .btn-group { display: flex; gap: 10px; margin-top: 15px; }
         button { background: linear-gradient(45deg, var(--accent), #ff00c8); color: white; border: none; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; flex: 2; transition: 0.2s; }
         #removeBtn { background: #1a1a24; flex: 1; font-size: 13px; display: none; border: 1px solid #333; }
+        .download-btn { background: #2d2d3a; flex: 1; font-size: 11px; margin-top: 10px; padding: 10px; box-shadow: none; border: 1px solid #333; }
 
-        #display-area { height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 15px; border-top: 1px solid #1f1f2e; }
+        #display-area { height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 15px; border-top: 1px solid #1f1f2e; }
         .winner-text { font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 0 20px var(--primary); animation: winnerJump 0.5s infinite alternate; }
+        
+        /* Verification Style */
+        .verify-wrapper { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+        .verify-code-box { background: #ffeb3b; color: #000; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .copy-btn { background: #333; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: bold; }
+        .copy-btn.success { background: #4ecca3; }
+        
         @keyframes winnerJump { from { transform: scale(1); } to { transform: scale(1.05); } }
         .shuffling { font-size: 28px; color: var(--primary); font-weight: bold; opacity: 0.8; }
         
         .history-container { text-align: left; background: #08080a; padding: 15px; border-radius: 12px; border: 1px solid #1f1f2e; }
-        #historyList { list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto; font-size: 13px; }
-        #historyList li { padding: 8px 0; border-bottom: 1px solid #14141c; display: flex; justify-content: space-between; align-items: center; }
+        #historyList { list-style: none; padding: 0; margin: 0; max-height: 180px; overflow-y: auto; font-size: 13px; }
+        #historyList li { padding: 8px 0; border-bottom: 1px solid #14141c; display: flex; flex-direction: column; gap: 4px; }
+        .hist-top { display: flex; justify-content: space-between; align-items: center; }
+        .hist-verify { font-size: 10px; color: #666; font-family: monospace; }
     </style>
 </head>
 <body>
 
+<!-- Header with UPI -->
 <div class="donate-header">
-    📢 PARTICIPATE: DONATE <b>RS 1</b> ONLY
+    📢 PARTICIPATE: WITH <b>RS 1</b> ONLY
     <span class="upi-id">UPI: nadimsbi147@ybl</span>
 </div>
 
+<!-- Clear Prize Information -->
 <div class="prize-section">
-    <div class="prize-card p1">🥇 1st Prize: Rs 51</div>
-    <div class="prize-card p2">🥈 2nd Prize: Rs 31</div>
-    <div class="prize-card p3">🥉 3rd Prize: Rs 25</div>
+    <div class="prize-card p1">🥇 1st: Rs 51</div>
+    <div class="prize-card p2">🥈 2nd: Rs 31</div>
+    <div class="prize-card p3">🥉 3rd: Rs 25</div>
 </div>
 
 <audio id="drumroll" src="https://soundjay.com" preload="auto"></audio>
@@ -104,19 +79,30 @@
     <div id="counter" class="count-badge">Contestants: 0</div>
     <textarea id="nameList" placeholder="Paste Names Here..." oninput="updateCount()"></textarea>
 
+    <!-- Control Group -->
     <div class="btn-group">
-        <button id="rollBtn" onclick="startRoll()">🎲 SPIN NOW</button>
+        <button id="rollBtn" onclick="startRoll()">🔥 SPIN NOW</button>
         <button id="removeBtn" onclick="removeWinner()">❌ REMOVE</button>
+    </div>
+
+    <!-- Download Options -->
+    <div class="btn-group">
+        <button class="download-btn" onclick="downloadParticipants()">📥 SAVE NAMES</button>
+        <button class="download-btn" onclick="downloadWinners()">📥 SAVE WINNERS</button>
     </div>
 
     <div id="display-area">
         <div id="status" style="font-size:11px; color:#444; text-transform:uppercase; margin-bottom:5px;">Ready to Start</div>
         <div id="result" class="shuffling">---</div>
+        <div id="verifyArea" class="verify-wrapper" style="display:none;">
+            <div id="verifyCode" class="verify-code-box"></div>
+            <button id="copyBtn" class="copy-btn" onclick="copyCode()">COPY</button>
+        </div>
     </div>
 
     <div class="history-container">
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <span style="font-size:11px; color:#555;">🏆 WINNER HISTORY</span>
+            <span style="font-size:11px; color:#555;">🏆 VERIFIED HISTORY</span>
             <button style="font-size:10px; color:#ff4d4d; background:none; border:none; cursor:pointer;" onclick="clearHistory()">RESET</button>
         </div>
         <ul id="historyList"></ul>
@@ -127,8 +113,10 @@
     const drumroll = document.getElementById('drumroll');
     const cheer = document.getElementById('cheer');
     let lastWinner = "";
+    let lastVCode = "";
     let winCount = 0;
 
+    // --- LOGIC FUNCTIONS ---
     function updateCount() {
         const names = getNames();
         document.getElementById('counter').innerHTML = `Contestants: ${names.length}`;
@@ -138,6 +126,10 @@
         return document.getElementById('nameList').value.split('\n').map(n => n.trim()).filter(n => n !== "");
     }
 
+    function generateVerifyCode() {
+        return 'MD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+    }
+
     function startRoll() {
         const names = getNames();
         if (names.length === 0) return;
@@ -145,6 +137,8 @@
         drumroll.play().catch(() => {});
         document.getElementById('rollBtn').disabled = true;
         document.getElementById('removeBtn').style.display = "none";
+        document.getElementById('verifyArea').style.display = "none";
+        
         let counter = 0;
         let speed = 50; 
         const shuffle = () => {
@@ -164,9 +158,17 @@
         drumroll.pause();
         cheer.play().catch(() => {});
         lastWinner = names[Math.floor(Math.random() * names.length)];
+        lastVCode = generateVerifyCode();
+
         document.getElementById('status').innerHTML = "🎉 WINNER FOUND! 🎉";
         document.getElementById('result').className = "winner-text";
         document.getElementById('result').innerHTML = `👑 ${lastWinner.toUpperCase()}`;
+        
+        document.getElementById('verifyArea').style.display = "flex";
+        document.getElementById('verifyCode').innerHTML = `ID: ${lastVCode}`;
+        const copyBtn = document.getElementById('copyBtn');
+        copyBtn.innerHTML = "COPY";
+        copyBtn.className = "copy-btn";
         
         winCount++;
         const li = document.createElement('li');
@@ -176,15 +178,54 @@
         if(winCount === 1) { prize = "🥇 Rs 51"; color = "var(--gold)"; }
         else if(winCount === 2) { prize = "🥈 Rs 31"; color = "var(--silver)"; }
         else if(winCount === 3) { prize = "🥉 Rs 25"; color = "var(--bronze)"; }
-        else { prize = "Participant"; }
+        else { prize = "Entry"; }
 
-        li.innerHTML = `<div style="color:${color}">#${winCount} ${lastWinner} <b>(${prize})</b></div> 
-                        <span style="color:#333; font-size:9px;">${new Date().toLocaleTimeString()}</span>`;
+        li.innerHTML = `
+            <div class="hist-top">
+                <div style="color:${color}">#${winCount} ${lastWinner} <b>(${prize})</b></div>
+                <span style="color:#333; font-size:9px;">${new Date().toLocaleTimeString()}</span>
+            </div>
+            <div class="hist-verify">Security ID: ${lastVCode}</div>
+        `;
         document.getElementById('historyList').prepend(li);
         
         document.getElementById('rollBtn').disabled = false;
         document.getElementById('removeBtn').style.display = "block";
         if(typeof confetti === 'function') confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+    }
+
+    // --- NEW DOWNLOAD & COPY FUNCTIONS ---
+    function downloadParticipants() {
+        const content = document.getElementById('nameList').value;
+        if (!content.trim()) return alert("No names to download!");
+        triggerDownload(content, "meedan_participants.txt");
+    }
+
+    function downloadWinners() {
+        const listItems = document.querySelectorAll('#historyList li');
+        if (listItems.length === 0) return alert("No winners recorded yet!");
+        let content = "🏆 MEEDAN WINNER LOG\n--------------------\n";
+        listItems.forEach(li => { content += li.innerText.replace(/\n/g, " | ") + "\n"; });
+        triggerDownload(content, "meedan_winners.txt");
+    }
+
+    function triggerDownload(content, filename) {
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function copyCode() {
+        navigator.clipboard.writeText(lastVCode).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.innerHTML = "SAVED!";
+            btn.className = "copy-btn success";
+        });
     }
 
     function removeWinner() {
@@ -194,6 +235,7 @@
         document.getElementById('removeBtn').style.display = "none";
         document.getElementById('result').innerHTML = "---";
         document.getElementById('result').className = "shuffling";
+        document.getElementById('verifyArea').style.display = "none";
         updateCount();
     }
 
