@@ -1,0 +1,15 @@
+{
+  "name": "Meedan Premium Giveaway",
+  "short_name": "Meedan",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#020204",
+  "theme_color": "#020204",
+  "icons": [
+    {
+      "src": "https://flaticon.com",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
