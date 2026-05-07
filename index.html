@@ -33,14 +33,6 @@
         }
         .upi-id { display: block; font-size: 22px; margin-top: 8px; color: #ffeb3b; letter-spacing: 4px; font-family: monospace; }
         
-        /* INSTALL BUTTON STYLE */
-        #pwaInstallBtn {
-            display: none; position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
-            background: var(--primary); color: #000; border: none; padding: 8px 15px;
-            border-radius: 8px; font-size: 10px; font-weight: 900; cursor: pointer;
-            box-shadow: 0 0 15px var(--primary);
-        }
-
         .admin-trigger { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); cursor: pointer; opacity: 0.4; font-size: 20px; transition: 0.3s; }
         .admin-trigger:hover { opacity: 1; color: var(--primary); transform: translateY(-50%) rotate(90deg); }
         
@@ -99,114 +91,162 @@
         .hist-top { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; }
         .hist-verify { font-size: 10px; color: #444; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* Mobile Friendly */
+        /* --- MOBILE FRIENDLY --- */
         @media (max-width: 600px) {
             .container { width: 92%; padding: 25px 20px; }
             .upi-id { font-size: 16px; letter-spacing: 2px; }
             button { padding: 18px; font-size: 16px; }
-            #pwaInstallBtn { padding: 5px 10px; font-size: 8px; left: 10px; }
+        }
+
+        /* Install Button in Admin */
+        #pwaInstallBtn { 
+            display: none; width: 100%; margin-bottom: 20px; background: var(--primary); 
+            color: black; font-weight: 800; padding: 15px; border-radius: 12px; border:none; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
 <div class="donate-header">
-    <button id="pwaInstallBtn">INSTALL APP</button>
     <span id="donateTextDisp">📢 PARTICIPATE: WITH RS 1 ONLY</span> 
     <span class="upi-id" id="upiDisp">nadimsbi147@ybl</span>
+    <div class="admin-trigger" onclick="toggleAdmin()">⚙️</div>
 </div>
 
-<div class="container">
+<div id="adminPanel">
+    <h3 style="margin:0 0 20px 0; font-size: 14px; color: var(--primary);">ADMIN SETTINGS</h3>
+    <button id="pwaInstallBtn" onclick="installApp()">📲 DOWNLOAD AS APP</button>
+    <div class="admin-field"><label>Business Logo</label><input type="file" id="logoInp" accept="image/*" onchange="handleLogoUpload(this)"></div>
+    <div class="admin-field"><label>Header Text</label><input type="text" id="headInp" value="📢 PARTICIPATE: WITH RS 1 ONLY"></div>
+    <div class="admin-field"><label>UPI ID</label><input type="text" id="upiInp" value="nadimsbi147@ybl"></div>
+    <div class="admin-field"><label>1st Prize</label><input type="text" id="p1Inp" value="Rs 51"></div>
+    <div class="admin-field"><label>2nd Prize</label><input type="text" id="p2Inp" value="Rs 31"></div>
+    <div class="admin-field"><label>3rd Prize</label><input type="text" id="p3Inp" value="Rs 25"></div>
+    <button onclick="saveAdmin()" style="width:100%; padding:12px; font-size:14px;">APPLY CHANGES</button>
+</div>
+
+<div class="prize-section">
+    <div class="prize-card p1">🥇 1st: <span id="p1Disp">Rs 51</span></div>
+    <div class="prize-card p2">🥈 2nd: <span id="p2Disp">Rs 31</span></div>
+    <div class="prize-card p3">🥉 3rd: <span id="p3Disp">Rs 25</span></div>
+</div>
+
+<div class="container" id="mainContainer">
     <div class="logo-box">
-        <div class="yt-icon-wrapper">
-            <div class="yt-play-btn"></div>
-            <span class="channel-name-premium">MEEDAN</span>
+        <div class="yt-icon-wrapper" id="logoWrapper">
+            <div class="yt-play-btn" id="defaultYTLogo"></div>
+            <img id="customLogo" src="">
         </div>
+        <span class="channel-name-premium" id="chanDisp">MEEDAN</span>
     </div>
 
-    <div class="count-badge" id="counter">--- Active: 0 ---</div>
-    <textarea id="nameList" oninput="updateCount()" placeholder="Enter names here..."></textarea>
+    <div id="counter" class="count-badge">--- Active: 0 ---</div>
+    <textarea id="nameList" placeholder="Paste names list here..." oninput="updateCount()"></textarea>
 
     <div class="btn-group">
-        <button id="rollBtn" onclick="startRoll()">Start Giveaway</button>
+        <button id="rollBtn" onclick="startRoll()">🚀 SPIN</button>
+        <button id="removeWinnerBtn" onclick="removeWinner()" style="display:none; font-size:12px; background: rgba(255,255,255,0.05); flex: 1;">REMOVE</button>
+    </div>
+
+    <div class="btn-group">
+        <button class="download-btn" onclick="exportParticipantsExcel()">📄 NAMES</button>
+        <button class="download-btn" onclick="exportWinnersExcel()">📄 LOGS</button>
     </div>
 
     <div id="display-area">
-        <div id="status" style="font-size: 11px; opacity: 0.5; margin-bottom: 10px;">READY</div>
-        <div id="congrats" class="congrats-label">WINNER DECLARED</div>
-        <div id="result" class="winner-text">---</div>
-        
-        <!-- Verification Area (Hidden by default) -->
-        <div id="verifyArea" style="display:none; margin-top: 15px;">
-            <div style="font-size: 10px; color: #666;">VERIFY CODE</div>
-            <div id="verifyCode" style="font-family: monospace; color: var(--primary); cursor: pointer;" onclick="copyCode()">######</div>
-        </div>
+        <div id="status" style="font-size:10px; color:#444; text-transform:uppercase; margin-bottom:10px; font-weight: 900;">System Ready</div>
+        <div id="congrats" class="congrats-label">Congratulations</div>
+        <div id="result" class="shuffling">---</div>
+        <div id="claimTimer">03:00</div>
+        <button id="noShowBtn" onclick="noShowRespin()"> CONTESTANT NO SHOW? RE-SPIN</button>
 
-        <div id="claimTimer">CLAIM TIME: 03:00</div>
-        <button id="noShowBtn" onclick="noShowRespin()">NO SHOW? RESPIN</button>
-        <div id="removeWinnerBtn" onclick="removeWinner()" style="display:none; margin-top: 15px; color: #ff4d4d; font-size: 11px; cursor: pointer;">[ REMOVE FROM LIST ]</div>
+        <div id="verifyArea" style="display:none; margin-top:20px;">
+            <span id="verifyCode" style="background:#ffeb3b; color:#000; padding:8px 15px; border-radius:8px; font-weight:900; font-size:14px;"></span>
+            <button onclick="copyCode()" style="background:rgba(255,255,255,0.1); padding:8px 15px; font-size:12px; margin-left:10px; color:white; border:none; border-radius:8px;">COPY</button>
+        </div>
     </div>
 
     <div class="history-container">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-            <span style="font-size: 12px; font-weight: 800;">HISTORY</span>
-            <span onclick="clearHistory()" style="font-size: 10px; color: #ff4d4d; cursor: pointer;">CLEAR</span>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <span style="font-size:11px; color:#555; font-weight: 900;">LOG HISTORY</span>
+            <button style="font-size:10px; color:#ff4d4d; background:none; border:none; cursor:pointer;" onclick="clearHistory()">RESET</button>
         </div>
         <ul id="historyList"></ul>
-    </div>
-
-    <div style="display: flex; gap: 10px;">
-        <button class="download-btn" onclick="exportParticipantsExcel()">Export List</button>
-        <button class="download-btn" onclick="exportWinnersExcel()">Export Log</button>
     </div>
 </div>
 
 <script>
-    // --- PWA INSTALL LOGIC ---
+    // --- APP DOWNLOAD LOGIC (PWA) ---
     let deferredPrompt;
-    const installBtn = document.getElementById('pwaInstallBtn');
-
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        installBtn.style.display = 'block';
+        document.getElementById('pwaInstallBtn').style.display = 'block';
     });
 
-    installBtn.addEventListener('click', async () => {
+    async function installApp() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                installBtn.style.display = 'none';
-            }
+            if (outcome === 'accepted') document.getElementById('pwaInstallBtn').style.display = 'none';
             deferredPrompt = null;
         }
-    });
+    }
 
-    // --- GLOBAL VARIABLES ---
-    let winnersArray = JSON.parse(localStorage.getItem('meedan_winners')) || [];
-    let winCount = winnersArray.length;
-    let countdownInterval;
+    // Dynamic Manifest Generation
+    const manifest = {
+        "name": "Meedan Premium Giveaway",
+        "short_name": "Meedan",
+        "start_url": ".",
+        "display": "standalone",
+        "background_color": "#020204",
+        "theme_color": "#020204",
+        "icons": [{ "src": "https://flaticon.com", "sizes": "512x512", "type": "image/png" }]
+    };
+    document.getElementById('pwa-manifest').setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest)));
+
+    // Service Worker Auto-Registration
+    if ('serviceWorker' in navigator) {
+        const swBlob = new Blob([`self.addEventListener('fetch', function(e){});`], {type: 'text/javascript'});
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl);
+    }
+
+    // --- EXISTING GIVEAWAY LOGIC ---
+    let winCount = 0; let winnersArray = []; let countdownInterval;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // --- AUDIO FUNCTIONS ---
-    function playTick() {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-    }
-    function playAlert() {
-        const osc = audioCtx.createOscillator();
-        osc.connect(audioCtx.destination);
-        osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+    function toggleAdmin() { const p = document.getElementById('adminPanel'); p.style.display = p.style.display === 'block' ? 'none' : 'block'; }
+    function handleLogoUpload(input) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { localStorage.setItem('m_logo', e.target.result); applyLogo(e.target.result); }; reader.readAsDataURL(input.files[0]); } }
+    function applyLogo(src) { const c = document.getElementById('customLogo'), s = document.getElementById('defaultYTLogo'); if (src) { c.src = src; c.style.display = 'block'; s.style.display = 'none'; } else { c.style.display = 'none'; s.style.display = 'flex'; } }
+    
+    function saveAdmin() {
+        localStorage.setItem('m_head', document.getElementById('headInp').value);
+        localStorage.setItem('m_upi', document.getElementById('upiInp').value);
+        localStorage.setItem('m_p1', document.getElementById('p1Inp').value);
+        localStorage.setItem('m_p2', document.getElementById('p2Inp').value);
+        localStorage.setItem('m_p3', document.getElementById('p3Inp').value);
+        loadSettings(); toggleAdmin();
     }
 
-    // --- EXISTING LOGIC ---
+    function loadSettings() {
+        document.getElementById('donateTextDisp').innerText = localStorage.getItem('m_head') || "📢 PARTICIPATE: WITH RS 1 ONLY";
+        document.getElementById('upiDisp').innerText = localStorage.getItem('m_upi') || "nadimsbi147@ybl";
+        document.getElementById('p1Disp').innerText = localStorage.getItem('m_p1') || "Rs 51";
+        document.getElementById('p2Disp').innerText = localStorage.getItem('m_p2') || "Rs 31";
+        document.getElementById('p3Disp').innerText = localStorage.getItem('m_p3') || "Rs 25";
+        applyLogo(localStorage.getItem('m_logo'));
+    }
+
+    function playTick() { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
+    function playAlert() { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(440, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 1); }
+
+    window.onload = function() {
+        loadSettings();
+        const sn = localStorage.getItem('meedan_names'); if(sn) { document.getElementById('nameList').value = sn; updateCount(); }
+        const sw = localStorage.getItem('meedan_winners'); if(sw) { winnersArray = JSON.parse(sw); winCount = winnersArray.length; refreshHistoryUI(); }
+    };
+
     function updateCount() { const names = getNames(); document.getElementById('counter').innerText = `--- Active: ${names.length} ---`; localStorage.setItem('meedan_names', document.getElementById('nameList').value); }
     function getNames() { return document.getElementById('nameList').value.split('\n').map(n => n.trim()).filter(n => n !== ""); }
     function generateVerifyCode() { return 'MD-' + Math.random().toString(36).substr(2, 6).toUpperCase(); }
@@ -291,13 +331,6 @@
     function downloadTxt(f, t) { const e = document.createElement('a'); e.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(t)); e.setAttribute('download', f); e.style.display = 'none'; document.body.appendChild(e); e.click(); document.body.removeChild(e); }
     function exportParticipantsExcel() { downloadTxt("Contestants.txt", getNames().join('\n')); }
     function exportWinnersExcel() { downloadTxt("Log.txt", winnersArray.map(w => `#${w.Rank} - ${w.Name} (${w.Prize}) | ID: ${w.Code}`).join('\n')); }
-
-    // Init page
-    window.onload = () => {
-        document.getElementById('nameList').value = localStorage.getItem('meedan_names') || '';
-        updateCount();
-        refreshHistoryUI();
-    };
 </script>
 </body>
 </html>
