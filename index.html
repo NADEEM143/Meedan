@@ -25,10 +25,12 @@
 
         .donate-header { 
             width: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(30px); padding: 25px 0; 
-            text-align: center; border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 1000;
+            text-align: center; border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 8000;
         }
 
-        /* HEADER ZOOM & RAINBOW ANIMATION */
+        .profile-trigger { position: absolute; left: 35px; top: 50%; transform: translateY(-50%); cursor: pointer; opacity: 0.7; font-size: 24px; transition: 0.3s; z-index: 9999; padding: 15px; }
+        .profile-trigger:hover { opacity: 1; color: var(--primary); }
+
         #donateTextDisp { 
             font-size: 10px; letter-spacing: 5px; font-weight: 800; display: inline-block;
             text-transform: uppercase; font-family: 'Syncopate', sans-serif;
@@ -38,20 +40,16 @@
             animation: shine 2s linear infinite, zoomLoopHeader 2s ease-in-out infinite;
         }
 
+        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes zoomLoopHeader { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
+
         .upi-id { display: block; font-size: 24px; margin-top: 8px; color: var(--text); letter-spacing: 6px; font-weight: 700; opacity: 0.9; }
+        .admin-trigger { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); cursor: pointer !important; opacity: 0.7; font-size: 26px; transition: 0.3s; z-index: 9999 !important; padding: 20px; display: block; }
         
-        /* GEAR BUTTON Z-INDEX FIX */
-        .admin-trigger { 
-            position: absolute; right: 35px; top: 50%; transform: translateY(-50%); 
-            cursor: pointer; opacity: 0.6; font-size: 22px; transition: 0.3s; 
-            z-index: 1100; padding: 10px;
-        }
-        .admin-trigger:hover { opacity: 1; transform: translateY(-50%) rotate(90deg); color: var(--primary); }
-        
-        #adminPanel {
+        #adminPanel, #profilePanel {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: var(--card); border: 1px solid var(--primary); padding: 40px; border-radius: 30px; 
-            z-index: 2000; width: 360px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 100px rgba(0,0,0,1); backdrop-filter: blur(50px);
+            z-index: 10000; width: 400px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 100px rgba(0,0,0,1); backdrop-filter: blur(50px);
         }
 
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
@@ -61,7 +59,16 @@
         .admin-field label { display: block; font-size: 9px; color: var(--primary); margin-bottom: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
         .admin-field input, .admin-field select { width: 100%; background: var(--input-bg); border: 1px solid #333; color: #fff; padding: 14px; border-radius: 12px; box-sizing: border-box; outline: none; }
 
-        /* PHOTO ADJUSTER */
+        .board-tabs { display: flex; gap: 5px; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 12px; }
+        .board-tab { flex: 1; padding: 8px; font-size: 9px; font-weight: 800; border: none; background: transparent; color: var(--text-dim); cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        .board-tab.active { background: var(--primary); color: #000; }
+        
+        #leaderboardList { list-style: none; padding: 0; margin: 15px 0; background: rgba(0,0,0,0.2); border-radius: 15px; max-height: 150px; overflow-y: auto; }
+        #leaderboardList li { padding: 10px 15px; font-size: 11px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--glass-border); }
+
+        .profile-btn { width: 100%; padding: 15px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--glass-border); border-radius: 15px; margin-top: 10px; cursor: pointer; font-weight: 700; text-transform: uppercase; font-size: 10px; }
+        .profile-btn:hover { background: var(--primary); color: #000; }
+
         #cropContainer { display: none; text-align: center; margin-bottom: 20px; background: #000; padding: 15px; border-radius: 20px; border: 1px solid var(--glass-border); }
         #cropCanvas { width: 150px; height: 150px; border-radius: 50%; background: #111; border: 2px solid var(--primary); margin: 0 auto 15px; overflow: hidden; position: relative; cursor: move; }
         #cropPreviewImg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
@@ -75,76 +82,56 @@
         .p2 { color: var(--silver); border-bottom: 3px solid var(--silver); }
         .p3 { color: var(--bronze); border-bottom: 3px solid var(--bronze); }
 
-        .container { 
-            background: var(--card); padding: 70px 60px; border-radius: 60px; width: 550px; text-align: center; 
-            box-shadow: 0 60px 100px rgba(0, 0, 0, 0.5); border: 1px solid var(--glass-border); margin: 20px 0; backdrop-filter: blur(60px);
-        }
-
+        .container { background: var(--card); padding: 70px 60px; border-radius: 60px; width: 550px; text-align: center; box-shadow: 0 60px 100px rgba(0, 0, 0, 0.5); border: 1px solid var(--glass-border); margin: 20px 0; backdrop-filter: blur(60px); }
         .logo-box { margin-bottom: 60px; display: flex; align-items: center; justify-content: center; gap: 20px; }
         #ytLogo { width: 60px; height: auto; filter: drop-shadow(0 0 15px rgba(255,0,0,0.4)); }
         #customLogoDisp { width: 70px; height: 70px; border-radius: 50%; display: none; border: 2px solid var(--primary); overflow: hidden; position: relative; box-shadow: 0 0 20px rgba(0,242,255,0.2); }
         #mainLogoImg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 
-        /* PROFESSIONAL MEEDAN */
-        .channel-name-premium { 
-            font-family: 'Syncopate', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: -3px; 
-            background: linear-gradient(to bottom, #ffffff 40%, #889297 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase;
-        }
-
+        .channel-name-premium { font-family: 'Syncopate', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: -3px; background: linear-gradient(to bottom, #ffffff 40%, #889297 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; }
         textarea { width: 100%; height: 160px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 35px; color: #fff; padding: 35px; font-size: 18px; resize: none; outline: none; box-sizing: border-box; transition: 0.3s; }
-        #rollBtn { background: linear-gradient(135deg, var(--accent), #ff00c8); color: white; border: none; padding: 28px; font-size: 20px; font-weight: 900; border-radius: 30px; cursor: pointer; width: 100%; margin-top: 40px; letter-spacing: 3px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 20px 40px rgba(112,0,255,0.2); }
-        #rollBtn:hover { transform: translateY(-3px); box-shadow: 0 25px 50px rgba(112,0,255,0.4); }
+        #rollBtn { background: linear-gradient(135deg, var(--accent), #ff00c8); color: white; border: none; padding: 28px; font-size: 20px; font-weight: 900; border-radius: 30px; cursor: pointer; width: 100%; margin-top: 40px; letter-spacing: 3px; text-transform: uppercase; transition: 0.3s; }
+        #rollBtn:disabled { background: #444 !important; color: #888; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.6; }
 
         #display-area { min-height: 280px; margin-top: 60px; border-top: 1px solid var(--glass-border); padding-top: 60px; }
-
-        /* SMALL RAINBOW ZOOMING CONGRATS */
-        #congratsLabel { 
-            font-size: 11px; letter-spacing: 10px; font-weight: 900; margin-bottom: 20px; 
-            display: none; text-transform: uppercase; font-family: 'Syncopate', sans-serif;
-            background: linear-gradient(90deg, #ff0000, #ffcc00, #00f2ff, #7000ff, #ff0000);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 2s linear infinite, zoomLoop 1.5s ease-in-out infinite;
-            text-shadow: 0 0 20px rgba(255,204,0,0.3);
-        }
-
-        @keyframes shine { to { background-position: 200% center; } }
+        #congratsLabel { font-size: 11px; letter-spacing: 10px; font-weight: 900; margin-bottom: 20px; display: none; text-transform: uppercase; font-family: 'Syncopate', sans-serif; background: linear-gradient(90deg, #ff0000, #ffcc00, #00f2ff, #7000ff, #ff0000); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 2s linear infinite, zoomLoop 1.5s ease-in-out infinite; }
         @keyframes zoomLoop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        @keyframes zoomLoopHeader { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
-
         .winner-text { font-size: 48px; font-weight: 900; color: #fff; text-shadow: 0 0 40px var(--primary); line-height: 1.2; letter-spacing: -1px; }
 
         #claimTimer { font-size: 16px; color: #ff4d4d; font-weight: 900; margin-top: 25px; display: none; background: rgba(255, 77, 77, 0.1); padding: 12px 30px; border-radius: 50px; letter-spacing: 2px; }
         #noShowBtn { background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d; font-size: 10px; padding: 12px 25px; border-radius: 15px; margin-top: 20px; display: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
         #noShowBtn:hover { background: #ff4d4d; color: white; }
-
         .history-container { text-align: left; background: rgba(0,0,0,0.3); padding: 45px; border-radius: 45px; border: 1px solid var(--glass-border); margin-top: 60px; width: 100%; box-sizing: border-box; }
         #historyList { list-style: none; padding: 0; margin: 0; }
-        #historyList li { padding: 25px 0; border-bottom: 1px solid var(--glass-border); }
-
-        @media (max-width: 600px) { .container { width: 92%; padding: 45px 25px; } .winner-text { font-size: 34px; } }
+        #historyList li { padding: 20px 0; border-bottom: 1px solid var(--glass-border); }
     </style>
 </head>
 <body>
 
 <div class="donate-header">
+    <span class="profile-trigger" onclick="toggleProfile()">👤</span>
     <span id="donateTextDisp">📢 PARTICIPATE: WITH RS 1 ONLY</span> 
     <span class="upi-id" id="upiDisp">nadimsbi147@ybl</span>
     <span class="admin-trigger" onclick="toggleAdmin()">⚙️</span>
+</div>
+
+<div id="profilePanel">
+    <div class="admin-header"><h3 style="color:var(--primary); font-size:14px; font-family:'Syncopate'">USER PROFILE</h3><span class="close-btn" onclick="toggleProfile()">×</span></div>
+    <label style="font-size:9px; color:var(--primary); letter-spacing:2px; font-weight:700;">ELITE LEADERBOARD</label>
+    <div class="board-tabs"><button class="board-tab active" onclick="switchTab('day', this)">DAY</button><button class="board-tab" onclick="switchTab('week', this)">WEEK</button><button class="board-tab" onclick="switchTab('month', this)">MONTH</button></div>
+    <ul id="leaderboardList"></ul>
+    <div class="admin-field" style="margin-top:20px;"><label>From Date</label><input type="date" id="exportFrom"><label style="margin-top:10px;">To Date</label><input type="date" id="exportTo"></div>
+    <button class="profile-btn" onclick="exportParticipantsText()">Registry (.txt)</button>
+    <button class="profile-btn" onclick="exportRangeWinnersText()">Range Logs (.txt)</button>
 </div>
 
 <div id="adminPanel">
     <div class="admin-header"><h3 style="color:var(--primary); font-size:14px; font-family:'Syncopate'">TERMINAL CONFIG</h3><span class="close-btn" onclick="toggleAdmin()">×</span></div>
     <div class="admin-field"><label>Interface Mode</label><select id="themeInp"><option value="dark">Elite Dark</option><option value="light">Elite Light</option></select></div>
     <div class="admin-field">
-        <label>Identity Logo</label>
-        <input type="file" id="logoInp" accept="image/*" onchange="handleLogoUpload(this)">
+        <label>Identity Logo</label><input type="file" id="logoInp" accept="image/*" onchange="handleLogoUpload(this)">
         <div id="cropContainer">
-            <div id="cropCanvas" onmousedown="startDrag(event)" onmousemove="doDrag(event)" onmouseup="stopDrag()" onmouseleave="stopDrag()" ontouchstart="startDrag(event)" ontouchmove="doDrag(event)" ontouchend="stopDrag()">
-                <img id="cropPreviewImg" src="">
-            </div>
+            <div id="cropCanvas" onmousedown="startDrag(event)" onmousemove="doDrag(event)" onmouseup="stopDrag()" onmouseleave="stopDrag()" ontouchstart="startDrag(event)" ontouchmove="doDrag(event)" ontouchend="stopDrag()"><img id="cropPreviewImg" src=""></div>
             <label style="font-size:8px; color:var(--primary); letter-spacing:1px">DRAG TO CENTER | SCROLL ZOOM</label>
             <input type="range" id="zoomRange" min="50" max="300" value="100" style="width:100%; margin-top:10px;" oninput="applyManualAdjust()">
         </div>
@@ -156,7 +143,7 @@
     <div class="admin-field"><label>1st Prize</label><input type="text" id="p1Inp"></div>
     <div class="admin-field"><label>2nd Prize</label><input type="text" id="p2Inp"></div>
     <div class="admin-field"><label>3rd Prize</label><input type="text" id="p3Inp"></div>
-    <button onclick="saveAdmin()" style="width:100%; padding:20px; background:var(--primary); color:#000; border:none; border-radius:15px; font-weight:900; cursor:pointer; letter-spacing:1px">COMMIT CHANGES</button>
+    <button onclick="saveAdmin()" style="width:100%; padding:20px; background:var(--primary); color:#000; border:none; border-radius:15px; font-weight:900; cursor:pointer;">COMMIT CHANGES</button>
 </div>
 
 <div class="prize-section">
@@ -175,26 +162,17 @@
     <textarea id="nameList" oninput="updateCount()" placeholder="Awaiting entries..."></textarea>
     <button id="rollBtn" onclick="startRoll()">INITIATE DRAW</button>
     <div id="display-area">
-        <div id="status" style="font-size: 9px; opacity:0.5; margin-bottom:15px; font-family:'JetBrains Mono'; letter-spacing:3px">STANDBY_STATUS</div>
+        <div id="status" style="font-size:9px; opacity:0.5; margin-bottom:15px; font-family:'JetBrains Mono'; letter-spacing:3px">STANDBY_STATUS</div>
         <div id="congratsLabel">CONGRATULATIONS</div>
         <div id="result" class="winner-text">---</div>
-        <div id="verifyArea" style="display:none; margin-top:20px;">
-            <div id="verifyCode" style="color:var(--primary); font-family:'JetBrains Mono'; font-weight:700; cursor:pointer; font-size:22px" onclick="copyCode()">######</div>
-        </div>
+        <div id="verifyArea" style="display:none; margin-top:20px;"><div id="verifyCode" style="color:var(--primary); font-family:'JetBrains Mono'; font-weight:700; cursor:pointer; font-size:22px" onclick="copyCode()">######</div></div>
         <div id="claimTimer">03:00</div>
         <button id="noShowBtn" onclick="noShowRespin()">RE-SPIN (NO SHOW)</button>
         <div id="removeWinnerBtn" onclick="removeWinner()" style="display:none; color:#ff4d4d; font-size:10px; margin-top:30px; cursor:pointer; font-weight:700; letter-spacing:2px">[ PURGE_WINNER ]</div>
     </div>
     <div class="history-container">
-        <div style="display:flex; justify-content:space-between; margin-bottom:30px; align-items:center;">
-            <span style="font-size:11px; font-weight:900; opacity:0.6; letter-spacing: 2px;">LOG_REGISTRY</span>
-            <span onclick="clearHistory()" style="font-size:10px; color:#ff4d4d; cursor:pointer; font-weight:900;">RESET_ALL</span>
-        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:30px; align-items:center;"><span style="font-size:11px; font-weight:900; opacity:0.6; letter-spacing: 2px;">LOG_REGISTRY</span><span onclick="clearHistory()" style="font-size:10px; color:#ff4d4d; cursor:pointer; font-weight:900;">RESET_ALL</span></div>
         <ul id="historyList"></ul>
-    </div>
-    <div style="display:flex; gap:15px; margin-top:30px; width:100%;">
-        <button style="flex:1; padding:15px; background:var(--input-bg); border:1px solid var(--glass-border); color:var(--text); border-radius:15px; font-weight:800; font-size:10px; cursor:pointer;" onclick="exportParticipantsExcel()">Export Registry</button>
-        <button style="flex:1; padding:15px; background:var(--input-bg); border:1px solid var(--glass-border); color:var(--text); border-radius:15px; font-weight:800; font-size:10px; cursor:pointer;" onclick="exportWinnersExcel()">Export Logs</button>
     </div>
 </div>
 
@@ -205,9 +183,11 @@
     function playTick() { if (audioCtx.state === 'suspended') audioCtx.resume(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
     function playAlert() { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(440, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 1); }
 
-    function toggleAdmin() { const p = document.getElementById('adminPanel'); p.style.display = (window.getComputedStyle(p).display === 'none') ? 'block' : 'none'; }
-    function startDrag(e) { isDragging = true; const ev = e.type === 'touchstart' ? e.touches : e; startX = ev.clientX - currentX; startY = ev.clientY - currentY; }
-    function doDrag(e) { if (!isDragging) return; const ev = e.type === 'touchmove' ? e.touches : e; currentX = ev.clientX - startX; currentY = ev.clientY - startY; applyManualAdjust(); }
+    function toggleAdmin() { document.getElementById('adminPanel').style.display = (document.getElementById('adminPanel').style.display === 'none') ? 'block' : 'none'; }
+    function toggleProfile() { document.getElementById('profilePanel').style.display = (document.getElementById('profilePanel').style.display === 'none') ? 'block' : 'none'; if(document.getElementById('profilePanel').style.display === 'block') switchTab('day', document.querySelector('.board-tab')); }
+    
+    function startDrag(e) { isDragging = true; const ev = e.type === 'touchstart' ? e.touches[0] : e; startX = ev.clientX - currentX; startY = ev.clientY - currentY; }
+    function doDrag(e) { if (!isDragging) return; const ev = e.type === 'touchmove' ? e.touches[0] : e; currentX = ev.clientX - startX; currentY = ev.clientY - startY; applyManualAdjust(); }
     function stopDrag() { isDragging = false; }
     function applyManualAdjust() { const zoom = document.getElementById('zoomRange').value; const img = document.getElementById('cropPreviewImg'); img.style.width = zoom + '%'; img.style.transform = `translate(calc(-50% + ${currentX}px), calc(-50% + ${currentY}px))`; }
 
@@ -231,8 +211,8 @@
         document.getElementById('p2Disp').innerText = localStorage.getItem('m_p2') || "Rs 31";
         document.getElementById('p3Disp').innerText = localStorage.getItem('m_p3') || "Rs 25";
         document.getElementById('headInp').value = localStorage.getItem('m_head') || ""; document.getElementById('upiInp').value = localStorage.getItem('m_upi') || "";
-        document.getElementById('p1Inp').value = localStorage.getItem('m_p1') || ""; document.getElementById('p2Inp').value = localStorage.getItem('m_p2') || "";
-        document.getElementById('p3Inp').value = localStorage.getItem('m_p3') || ""; document.getElementById('themeInp').value = theme;
+        document.getElementById('p1Inp').value = localStorage.getItem('m_p1') || ""; document.getElementById('p2Inp').value = localStorage.getItem
+('m_p2') || ""; document.getElementById('p3Inp').value = localStorage.getItem('m_p3') || "";
         const logo = localStorage.getItem('m_logo'); const yt = document.getElementById('ytLogo'); const custom = document.getElementById('customLogoDisp');
         if(logo) { yt.style.display = 'none'; custom.style.display = 'block'; const mImg = document.getElementById('mainLogoImg'); mImg.src = logo;
             const z = localStorage.getItem('m_logo_z') || 100, x = localStorage.getItem('m_logo_x') || 0, y = localStorage.getItem('m_logo_y') || 0;
@@ -240,140 +220,109 @@
         } else { yt.style.display = 'block'; custom.style.display = 'none'; }
     }
 
-    window.onload = function() { loadSettings(); const sn = localStorage.getItem('meedan_names'); if(sn) { document.getElementById('nameList').value = sn; updateCount(); }
+    window.onload = function() { 
+        loadSettings(); 
+        const sn = localStorage.getItem('meedan_names'); if(sn) { document.getElementById('nameList').value = sn; updateCount(); }
         const sw = localStorage.getItem('meedan_winners'); if(sw) { winnersArray = JSON.parse(sw); winCount = winnersArray.length; refreshHistoryUI(); }
-        document.getElementById('adminPanel').style.display = 'none';
+        const lastWin = localStorage.getItem('last_winner_data');
+        if(lastWin) {
+            const data = JSON.parse(lastWin);
+            document.getElementById('congratsLabel').style.display = "block";
+            document.getElementById('result').innerText = "🏆 " + data.name;
+            document.getElementById('verifyCode').innerText = data.code;
+            document.getElementById('verifyArea').style.display = "block";
+            document.getElementById('removeWinnerBtn').style.display = "block";
+            document.getElementById('status').innerText = "SESSION_RESTORED";
+        }
     };
+
+    function switchTab(type, btn) {
+        document.querySelectorAll('.board-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        const list = document.getElementById('leaderboardList');
+        list.innerHTML = "";
+        const now = new Date();
+        let filtered = winnersArray.filter(w => {
+            const wDate = new Date(w.Date);
+            if(type === 'day') return wDate.toDateString() === now.toDateString();
+            if(type === 'week') { const diff = (now - wDate) / (1000 * 60 * 60 * 24); return diff <= 7; }
+            if(type === 'month') return wDate.getMonth() === now.getMonth() && wDate.getFullYear() === now.getFullYear();
+        });
+        const counts = {}; filtered.forEach(w => counts[w.Name] = (counts[w.Name] || 0) + 1);
+        const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+        if(sorted.length === 0) list.innerHTML = "<li style='opacity:0.5; justify-content:center;'>No data available</li>";
+        sorted.forEach(([name, count]) => { list.innerHTML += `<li><span>${name}</span><span style="color:var(--primary)">${count} Wins</span></li>`; });
+    }
 
     function startRoll() {
         const names = getNames(); if (names.length === 0) return alert("Registry Empty.");
-        const spinBtn = document.getElementById('rollBtn'); spinBtn 
-        .disabled = true; 
+        const spinBtn = document.getElementById('rollBtn'); spinBtn.disabled = true;
         clearInterval(countdownInterval);
-        document.getElementById('claimTimer').style.display = "none"; 
-        document.getElementById('noShowBtn').style.display = "none";
-        document.getElementById('verifyArea').style.display = "none"; 
-        document.getElementById('congratsLabel').style.display = "none";
-        document.getElementById('status').innerText = "SYNCHRONIZING_DRAW...";
-        
+        document.getElementById('claimTimer').style.display = "none"; document.getElementById('noShowBtn').style.display = "none";
+        document.getElementById('verifyArea').style.display = "none"; document.getElementById('congratsLabel').style.display = "none";
+        document.getElementById('status').innerText = "DRAWING...";
+        localStorage.removeItem('last_winner_data');
         let delay = 50, elapsed = 0, total = 10000;
         const roll = () => { 
             const r = Math.floor(Math.random() * names.length); 
-            document.getElementById('result').innerText = names[r]; 
-            playTick(); 
-            elapsed += delay;
-            
-            // SOLOMO DECELERATION LOGIC
-            if (elapsed < total * 0.6) delay = 50; 
-            else if (elapsed < total * 0.8) delay = 120; 
-            else if (elapsed < total * 0.9) delay = 250; 
-            else delay += 90;
-
-            if (elapsed < total) setTimeout(roll, delay); 
-            else { finalizeWinner(names[r]); spinBtn.disabled = false; }
+            document.getElementById('result').innerText = names[r]; playTick(); elapsed += delay;
+            if (elapsed < total * 0.6) delay = 50; else if (elapsed < total * 0.8) delay = 120; else if (elapsed < total * 0.9) delay = 250; else delay += 85;
+            if (elapsed < total) setTimeout(roll, delay); else { finalizeWinner(names[r]); spinBtn.disabled = false; }
         }; roll();
     }
 
     function finalizeWinner(winner) {
-        winCount++; 
-        const vCode = 'MD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-        let p = winCount === 1 ? localStorage.getItem('m_p1') : winCount === 2 ? localStorage.getItem('m_p2') : winCount === 3 ? localStorage.getItem('m_p3') : "Tier_Winner";
-        
-        document.getElementById('congratsLabel').style.display = "block"; 
-        document.getElementById('result').innerText = "🏆 " + winner;
-        document.getElementById('verifyCode').innerText = vCode; 
-        document.getElementById('verifyArea').style.display = "block";
-        document.getElementById('removeWinnerBtn').style.display = "block"; 
-        playAlert(); 
-        startClaimTimer();
-        
-        winnersArray.push({ "Rank": winCount, "Name": winner, "Prize": p || "Prize Won", "Code": vCode });
-        localStorage.setItem('meedan_winners', JSON.stringify(winnersArray)); 
-        refreshHistoryUI();
+        winCount++; const vCode = 'MD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        const dateStr = new Date().toISOString().split('T')[0];
+        let p = winCount === 1 ? localStorage.getItem('m_p1') : winCount === 2 ? localStorage.getItem('m_p2') : winCount === 3 ? localStorage.getItem('m_p3') : "Winner";
+        document.getElementById('congratsLabel').style.display = "block"; document.getElementById('result').innerText = "🏆 " + winner;
+        document.getElementById('verifyCode').innerText = vCode; document.getElementById('verifyArea').style.display = "block";
+        document.getElementById('removeWinnerBtn').style.display = "block";
+        localStorage.setItem('last_winner_data', JSON.stringify({name: winner, code: vCode}));
+        playAlert(); startClaimTimer();
+        winnersArray.push({ "Rank": winCount, "Name": winner, "Prize": p || "Won", "Code": vCode, "Date": dateStr });
+        localStorage.setItem('meedan_winners', JSON.stringify(winnersArray)); refreshHistoryUI();
     }
 
     function startClaimTimer() {
-        let s = 180; 
-        document.getElementById('claimTimer').style.display = "block"; 
-        document.getElementById('noShowBtn').style.display = "block";
-        countdownInterval = setInterval(() => { 
-            let m = Math.floor(s/60), sec = s%60; 
-            document.getElementById('claimTimer').innerText = `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; 
-            if (s <= 0) { 
-                clearInterval(countdownInterval); 
-                document.getElementById('claimTimer').innerText = "WINDOW EXPIRED";
-                playAlert(); 
-            } 
-            s--; 
-        }, 1000);
+        let s = 180; document.getElementById('claimTimer').style.display = "block"; document.getElementById('noShowBtn').style.display = "block";
+        countdownInterval = setInterval(() => { let m = Math.floor(s/60), sec = s%60; document.getElementById('claimTimer').innerText = `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; if (s <= 0) clearInterval(countdownInterval); s--; }, 1000);
     }
 
     function refreshHistoryUI() {
-        const hl = document.getElementById('historyList'); 
-        hl.innerHTML = "";
+        const hl = document.getElementById('historyList'); hl.innerHTML = "";
         winnersArray.slice().reverse().forEach(win => {
             let color = win.Rank === 1 ? "var(--gold)" : win.Rank === 2 ? "var(--silver)" : win.Rank === 3 ? "var(--bronze)" : "white";
             const li = document.createElement('li'); 
-            li.innerHTML = `<div style="display:flex;justify-content:space-between;font-weight:800;color:${color};font-size:15px;">🏆 #${win.Rank} ${win.Name} (${win.Prize})</div><div style="font-size:10px;opacity:0.4;font-family:'JetBrains Mono';letter-spacing:2px;margin-top:5px;">ID: ${win.Code}</div>`;
+            li.innerHTML = `<div style="display:flex;justify-content:space-between;font-weight:800;color:${color}">🏆 #${win.Rank} ${win.Name}</div><div style="font-size:10px;opacity:0.4;">ID: ${win.Code} | ${win.Date}</div>`;
             hl.appendChild(li);
         });
     }
 
-    function updateCount() { 
-        const names = getNames(); 
-        document.getElementById('counter').innerText = `DATABASE_ACTIVE: ${names.length}`; 
-        localStorage.setItem('meedan_names', document.getElementById('nameList').value); 
-    }
-
-    function getNames() { 
-        return document.getElementById('nameList').value.split('\n').map(n => n.trim()).filter(n => n !== ""); 
-    }
-
-    function noShowRespin() { 
-        if(confirm("Confirm No-Show? Winner will be purged and system will re-spin.")) { 
-            removeWinner(); 
-            startRoll(); 
-        } 
-    }
-
-    function copyCode() { 
-        navigator.clipboard.writeText(document.getElementById('verifyCode').innerText); 
-        alert("Verification Hash Copied!"); 
-    }
-
+    function updateCount() { const names = getNames(); document.getElementById('counter').innerText = `DATABASE_ACTIVE: ${names.length}`; localStorage.setItem('meedan_names', document.getElementById('nameList').value); }
+    function getNames() { return document.getElementById('nameList').value.split('\n').map(n => n.trim()).filter(n => n !== ""); }
+    function noShowRespin() { if(confirm("Re-spin?")) { removeWinner(); startRoll(); } }
+    function copyCode() { navigator.clipboard.writeText(document.getElementById('verifyCode').innerText); alert("Copied!"); }
     function removeWinner() {
         const wt = document.getElementById('result').innerText.replace("🏆 ", "");
         document.getElementById('nameList').value = getNames().filter(n => n !== wt).join('\n');
-        document.getElementById('congratsLabel').style.display = "none"; 
-        document.getElementById('verifyArea').style.display = "none";
-        document.getElementById('result').innerText = "---"; 
-        document.getElementById('claimTimer').style.display = "none";
-        document.getElementById('noShowBtn').style.display = "none"; 
-        document.getElementById('removeWinnerBtn').style.display = "none";
-        updateCount();
+        document.getElementById('congratsLabel').style.display = "none"; document.getElementById('verifyArea').style.display = "none";
+        document.getElementById('result').innerText = "---"; document.getElementById('claimTimer').style.display = "none";
+        document.getElementById('noShowBtn').style.display = "none"; document.getElementById('removeWinnerBtn').style.display = "none";
+        localStorage.removeItem('last_winner_data'); updateCount();
     }
 
-    function clearHistory() { 
-        if (confirm("Reset Logs? This will permanently wipe the winner database.")) { 
-            winnersArray = []; winCount = 0; 
-            localStorage.removeItem('meedan_winners'); 
-            refreshHistoryUI(); 
-        } 
-    }
+    function clearHistory() { if (confirm("Reset Logs?")) { winnersArray = []; winCount = 0; localStorage.removeItem('meedan_winners'); localStorage.removeItem('last_winner_data'); refreshHistoryUI(); } }
 
-    function downloadTxt(f, t) { 
-        const e = document.createElement('a'); 
-        e.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(t)); 
-        e.setAttribute('download', f); 
-        e.style.display = 'none'; 
-        document.body.appendChild(e); 
-        e.click(); 
-        document.body.removeChild(e); 
+    function downloadTxt(f, t) { const e = document.createElement('a'); e.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(t)); e.setAttribute('download', f); e.style.display = 'none'; document.body.appendChild(e); e.click(); document.body.removeChild(e); }
+    function exportParticipantsText() { downloadTxt("Registry.txt", getNames().join('\n')); }
+    function exportRangeWinnersText() {
+        const from = document.getElementById('exportFrom').value; const to = document.getElementById('exportTo').value;
+        if(!from || !to) return alert("Select range.");
+        const filtered = winnersArray.filter(w => w.Date >= from && w.Date <= to);
+        if(filtered.length === 0) return alert("No logs.");
+        downloadTxt(`Logs_${from}_to_${to}.txt`, filtered.map(w => `${w.Date} | #${w.Rank} - ${w.Name}`).join('\n'));
     }
-    
-    function exportParticipantsExcel() { downloadTxt("Registry.txt", getNames().join('\n')); }
-    function exportWinnersExcel() { downloadTxt("Logs.txt", winnersArray.map(w => `#${w.Rank} - ${w.Name} (${w.Prize}) | ID: ${w.Code}`).join('\n')); }
 </script>
 </body>
 </html>
-
