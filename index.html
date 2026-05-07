@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meedan Premium - Verified Giveaway</title>
     
-    <!-- PWA Basic Meta -->
+    <!-- PWA REQUIRED META -->
     <meta name="theme-color" content="#020204">
     <link rel="manifest" id="pwa-manifest">
 
@@ -91,15 +91,18 @@
         .hist-top { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; }
         .hist-verify { font-size: 10px; color: #444; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* Mobile Adjustments */
+        /* --- MOBILE FRIENDLY --- */
         @media (max-width: 600px) {
             .container { width: 92%; padding: 25px 20px; }
-            .upi-id { font-size: 16px; }
+            .upi-id { font-size: 16px; letter-spacing: 2px; }
             button { padding: 18px; font-size: 16px; }
-            .winner-text { font-size: 28px; }
         }
 
-        #installBtn { display: none; width: 100%; margin-top: 10px; background: var(--primary); color: black; font-size: 12px; padding: 10px; }
+        /* Install Button in Admin */
+        #pwaInstallBtn { 
+            display: none; width: 100%; margin-bottom: 20px; background: var(--primary); 
+            color: black; font-weight: 800; padding: 15px; border-radius: 12px; border:none; cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -111,8 +114,8 @@
 </div>
 
 <div id="adminPanel">
-    <h3 style="margin:0 0 20px 0; font-size: 14px; color: var(--primary);">ELITE CONFIGURATION</h3>
-    <button id="installBtn" onclick="installPWA()">📲 INSTALL AS APP</button>
+    <h3 style="margin:0 0 20px 0; font-size: 14px; color: var(--primary);">ADMIN SETTINGS</h3>
+    <button id="pwaInstallBtn" onclick="installApp()">📲 DOWNLOAD AS APP</button>
     <div class="admin-field"><label>Business Logo</label><input type="file" id="logoInp" accept="image/*" onchange="handleLogoUpload(this)"></div>
     <div class="admin-field"><label>Header Text</label><input type="text" id="headInp" value="📢 PARTICIPATE: WITH RS 1 ONLY"></div>
     <div class="admin-field"><label>UPI ID</label><input type="text" id="upiInp" value="nadimsbi147@ybl"></div>
@@ -173,31 +176,26 @@
 </div>
 
 <script>
-    let winCount = 0; let winnersArray = []; let countdownInterval;
+    // --- APP DOWNLOAD LOGIC (PWA) ---
     let deferredPrompt;
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    // --- PWA LOGIC ---
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        document.getElementById('installBtn').style.display = 'block';
+        document.getElementById('pwaInstallBtn').style.display = 'block';
     });
 
-    async function installPWA() {
+    async function installApp() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                document.getElementById('installBtn').style.display = 'none';
-            }
+            if (outcome === 'accepted') document.getElementById('pwaInstallBtn').style.display = 'none';
             deferredPrompt = null;
         }
     }
 
-    // Dynamic Manifest creation for standalone feel
+    // Dynamic Manifest Generation
     const manifest = {
-        "name": "Meedan Giveaway Premium",
+        "name": "Meedan Premium Giveaway",
         "short_name": "Meedan",
         "start_url": ".",
         "display": "standalone",
@@ -207,7 +205,17 @@
     };
     document.getElementById('pwa-manifest').setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest)));
 
-    // Standard Functions
+    // Service Worker Auto-Registration
+    if ('serviceWorker' in navigator) {
+        const swBlob = new Blob([`self.addEventListener('fetch', function(e){});`], {type: 'text/javascript'});
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl);
+    }
+
+    // --- EXISTING GIVEAWAY LOGIC ---
+    let winCount = 0; let winnersArray = []; let countdownInterval;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
     function toggleAdmin() { const p = document.getElementById('adminPanel'); p.style.display = p.style.display === 'block' ? 'none' : 'block'; }
     function handleLogoUpload(input) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { localStorage.setItem('m_logo', e.target.result); applyLogo(e.target.result); }; reader.readAsDataURL(input.files[0]); } }
     function applyLogo(src) { const c = document.getElementById('customLogo'), s = document.getElementById('defaultYTLogo'); if (src) { c.src = src; c.style.display = 'block'; s.style.display = 'none'; } else { c.style.display = 'none'; s.style.display = 'flex'; } }
