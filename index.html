@@ -149,9 +149,23 @@ body.light-mode .winner-text {
 
         .channel-name-premium { font-family: 'Syncopate', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: -3px; background: linear-gradient(to bottom, #ffffff 40%, #889297 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; }
         textarea { width: 100%; height: 160px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 35px; color: #fff; padding: 35px; font-size: 18px; resize: none; outline: none; box-sizing: border-box; transition: 0.3s; }
-        #rollBtn { background: linear-gradient(135deg, var(--accent), #ff00c8); color: white; border: none; padding: 28px; font-size: 20px; font-weight: 900; border-radius: 30px; cursor: pointer; width: 100%; margin-top: 40px; letter-spacing: 3px; text-transform: uppercase; transition: 0.3s; }
-        #rollBtn:disabled { background: #444 !important; color: #888; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.6; }
+        #rollBtn { 
+    background: linear-gradient(135deg, var(--accent), #ff00c8); 
+    color: white; border: none; padding: 28px; font-size: 20px; 
+    font-weight: 900; border-radius: 30px; cursor: pointer; 
+    width: 100%; margin-top: 40px; letter-spacing: 3px; 
+    text-transform: uppercase; transition: 0.3s; 
+}
 
+#rollBtn:disabled { 
+    background: #222 !important; 
+    color: #666 !important; 
+    cursor: not-allowed; 
+    transform: none !important; 
+    box-shadow: none !important; 
+    opacity: 0.6;
+    filter: grayscale(1);
+}
         #display-area { min-height: 280px; margin-top: 60px; border-top: 1px solid var(--glass-border); padding-top: 60px; }
         #congratsLabel { font-size: 11px; letter-spacing: 10px; font-weight: 900; margin-bottom: 20px; display: none; text-transform: uppercase; font-family: 'Syncopate', sans-serif; background: linear-gradient(90deg, #ff0000, #ffcc00, #00f2ff, #7000ff, #ff0000); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 2s linear infinite, zoomLoop 1.5s ease-in-out infinite; }
         @keyframes zoomLoop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -348,7 +362,7 @@ body.light-mode .winner-text {
         playTick(); 
         elapsed += delay;
 
-        if (elapsed < total * 0.6) delay = 50; 
+                if (elapsed < total * 0.6) delay = 50; 
         else if (elapsed < total * 0.8) delay = 120; 
         else if (elapsed < total * 0.9) delay = 250; 
         else delay += 85;
@@ -356,8 +370,12 @@ body.light-mode .winner-text {
         if (elapsed < total) {
             setTimeout(roll, delay);
         } else { 
+            // End of the spin performance
             finalizeWinner(finalWinner); 
-            spinBtn.disabled = false; 
+            
+            // ⚡ REMOVED: spinBtn.disabled = false;
+            // The button will now stay locked (gray) until you click PURGE_WINNER
+            document.getElementById('status').innerText = "WINNER_LOCKED: PURGE_REQUIRED";
         }
     }; 
     roll();
@@ -428,19 +446,55 @@ body.light-mode .winner-text {
     function updateCount() { const names = getNames(); document.getElementById('counter').innerText = `DATABASE_ACTIVE: ${names.length}`; localStorage.setItem('meedan_names', document.getElementById('nameList').value); }
     function getNames() { return document.getElementById('nameList').value.split('\n').map(n => n.trim()).filter(n => n !== ""); }
     function noShowRespin() { if(confirm("Re-spin?")) { removeWinner(); startRoll(); } }
-    function copyCode() { navigator.clipboard.writeText(document.getElementById('verifyCode').innerText); alert("Copied!"); }
-    function removeWinner() {
-        const wt = document.getElementById('result').innerText.replace("🏆 ", "");
-        document.getElementById('nameList').value = getNames().filter(n => n !== wt).join('\n');
-        document.getElementById('congratsLabel').style.display = "none"; document.getElementById('verifyArea').style.display = "none";
-        document.getElementById('result').innerText = "---"; document.getElementById('claimTimer').style.display = "none";
-        document.getElementById('noShowBtn').style.display = "none"; document.getElementById('removeWinnerBtn').style.display = "none";
-        localStorage.removeItem('last_winner_data'); updateCount();
+        function copyCode() { 
+        navigator.clipboard.writeText(document.getElementById('verifyCode').innerText); 
+        alert("Copied!"); 
     }
 
-    function clearHistory() { if (confirm("Reset Logs?")) { winnersArray = []; winCount = 0; localStorage.removeItem('meedan_winners'); localStorage.removeItem('last_winner_data'); refreshHistoryUI(); } }
+    function removeWinner() {
+        const wt = document.getElementById('result').innerText.replace("🏆 ", "");
+        
+        // Remove name from the list
+        document.getElementById('nameList').value = getNames().filter(n => n !== wt).join('\n');
+        
+        // Reset UI Elements
+        document.getElementById('congratsLabel').style.display = "none"; 
+        document.getElementById('verifyArea').style.display = "none";
+        document.getElementById('result').innerText = "---"; 
+        document.getElementById('claimTimer').style.display = "none";
+        document.getElementById('noShowBtn').style.display = "none"; 
+        document.getElementById('removeWinnerBtn').style.display = "none";
+        
+        localStorage.removeItem('last_winner_data'); 
+        updateCount();
 
-    function downloadTxt(f, t) { const e = document.createElement('a'); e.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(t)); e.setAttribute('download', f); e.style.display = 'none'; document.body.appendChild(e); e.click(); document.body.removeChild(e); }
+        // ⚡ Unlock the draw button for the next round
+        document.getElementById('rollBtn').disabled = false;
+        document.getElementById('status').innerText = "READY_FOR_NEXT_DRAW";
+    }
+
+    function clearHistory() { 
+        if (confirm("Reset Logs?")) { 
+            winnersArray = []; 
+            winCount = 0; 
+            localStorage.removeItem('meedan_winners'); 
+            localStorage.removeItem('last_winner_data'); 
+            refreshHistoryUI(); 
+            
+            // Ensure button is enabled if history is cleared
+            document.getElementById('rollBtn').disabled = false;
+        } 
+    }
+
+    function downloadTxt(f, t) { 
+        const e = document.createElement('a'); 
+        e.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(t));
+        e.setAttribute('download', f);
+        e.style.display = 'none';
+        document.body.appendChild(e);
+        e.click();
+        document.body.removeChild(e);
+    }
     function exportParticipantsText() { downloadTxt("Registry.txt", getNames().join('\n')); }
     function exportRangeWinnersText() {
         const from = document.getElementById('exportFrom').value; const to = document.getElementById('exportTo').value;
