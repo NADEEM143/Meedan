@@ -370,12 +370,8 @@ body.light-mode .winner-text {
         if (elapsed < total) {
             setTimeout(roll, delay);
         } else { 
-            // End of the spin performance
             finalizeWinner(finalWinner); 
-            
-            // ⚡ REMOVED: spinBtn.disabled = false;
-            // The button will now stay locked (gray) until you click PURGE_WINNER
-            document.getElementById('status').innerText = "WINNER_LOCKED: PURGE_REQUIRED";
+                        document.getElementById('status').innerText = "WINNER_LOCKED: PURGE_REQUIRED";
         }
     }; 
     roll();
@@ -384,7 +380,6 @@ body.light-mode .winner-text {
         winCount++; 
         const mode = localStorage.getItem('m_winMode') || 'loop';
         
-        // AUTO-LOOP LOGIC: If 'loop' is selected, reset to 1 after the 3rd winner
         if (mode === 'loop' && winCount > 3) {
             winCount = 1;
         }
@@ -392,7 +387,6 @@ body.light-mode .winner-text {
         const vCode = 'MD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
         const dateStr = new Date().toISOString().split('T')[0];
         
-        // Determine Prize Label based on current winCount
         let p;
         if (winCount === 1) p = localStorage.getItem('m_p1') || "1st Prize";
         else if (winCount === 2) p = localStorage.getItem('m_p2') || "2nd Prize";
@@ -417,7 +411,7 @@ body.light-mode .winner-text {
     }
 
     function startClaimTimer() {
-        clearInterval(countdownInterval); // Clear any existing timer first
+        clearInterval(countdownInterval); 
         let s = 180; 
         document.getElementById('claimTimer').style.display = "block"; 
         document.getElementById('noShowBtn').style.display = "block";
@@ -454,10 +448,8 @@ body.light-mode .winner-text {
     function removeWinner() {
         const wt = document.getElementById('result').innerText.replace("🏆 ", "");
         
-        // Remove name from the list
         document.getElementById('nameList').value = getNames().filter(n => n !== wt).join('\n');
         
-        // Reset UI Elements
         document.getElementById('congratsLabel').style.display = "none"; 
         document.getElementById('verifyArea').style.display = "none";
         document.getElementById('result').innerText = "---"; 
@@ -467,8 +459,6 @@ body.light-mode .winner-text {
         
         localStorage.removeItem('last_winner_data'); 
         updateCount();
-
-        // ⚡ Unlock the draw button for the next round
         document.getElementById('rollBtn').disabled = false;
         document.getElementById('status').innerText = "READY_FOR_NEXT_DRAW";
     }
@@ -480,8 +470,6 @@ body.light-mode .winner-text {
             localStorage.removeItem('meedan_winners'); 
             localStorage.removeItem('last_winner_data'); 
             refreshHistoryUI(); 
-            
-            // Ensure button is enabled if history is cleared
             document.getElementById('rollBtn').disabled = false;
         } 
     }
