@@ -15,8 +15,6 @@
             --gold: #ffcc00; --silver: #e2e8f0; --bronze: #ff8c00; 
         }
 
-        /* --- ELITE LIGHT MODE OVERRIDES --- */
-/* --- ELITE LIGHT MODE OVERRIDES --- */
 body.light-mode { 
     --bg: #ffffff; 
     --card: rgba(255, 255, 255, 0.98); 
@@ -25,7 +23,6 @@ body.light-mode {
     background: radial-gradient(circle at 0% 0%, #f0f4ff 0%, #ffffff 100%) !important;
 }
 
-/* Fix for Prize Cards */
 body.light-mode .prize-card {
     background: #ffffff !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -35,7 +32,6 @@ body.light-mode .p1 { color: #b8860b !important; border-bottom: 3px solid #b8860
 body.light-mode .p2 { color: #5c6b73 !important; border-bottom: 3px solid #5c6b73 !important; }
 body.light-mode .p3 { color: #8b4513 !important; border-bottom: 3px solid #8b4513 !important; }
 
-/* Fix for Textarea and History Containers */
 body.light-mode textarea, 
 body.light-mode .history-container {
     background: #f1f5f9 !important;
@@ -43,14 +39,12 @@ body.light-mode .history-container {
     border: 1px solid #cbd5e1 !important;
 }
 
-/* Fix for all text in History List (Winners & IDs) */
 body.light-mode #historyList li, 
 body.light-mode #historyList li div {
     color: #000000 !important;
     border-bottom-color: rgba(0,0,0,0.1) !important;
 }
 
-/* Fix for invisible Status (SESSION_RESTORED) and Counter */
 body.light-mode #status, 
 body.light-mode #counter {
     color: #000000 !important;
@@ -58,7 +52,6 @@ body.light-mode #counter {
     font-weight: 700;
 }
 
-/* Fix for the invisible Channel and Winner Names */
 body.light-mode .channel-name-premium, 
 body.light-mode .winner-text {
     color: #000000 !important;
@@ -67,7 +60,6 @@ body.light-mode .winner-text {
     text-shadow: 0 0 20px rgba(0, 242, 255, 0.2) !important;
 }
 
-/* Scroll Lock Logic */
 .lock-scroll {
     overflow: hidden !important;
     height: 100vh;
