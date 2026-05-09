@@ -15,11 +15,63 @@
             --gold: #ffcc00; --silver: #e2e8f0; --bronze: #ff8c00; 
         }
 
-        body.light-mode { --bg: #f8fafc; --card: rgba(255, 255, 255, 0.95); --text: #0f172a; --text-dim: #64748b; --glass-border: rgba(0, 0, 0, 0.1); }
-        .lock-scroll {
-        overflow: hidden !important;
-        height: 100vh;
-    }
+        /* --- ELITE LIGHT MODE OVERRIDES --- */
+/* --- ELITE LIGHT MODE OVERRIDES --- */
+body.light-mode { 
+    --bg: #ffffff; 
+    --card: rgba(255, 255, 255, 0.98); 
+    --text: #000000; 
+    --text-dim: #475569;
+    background: radial-gradient(circle at 0% 0%, #f0f4ff 0%, #ffffff 100%) !important;
+}
+
+/* Fix for Prize Cards */
+body.light-mode .prize-card {
+    background: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05) !important;
+}
+body.light-mode .p1 { color: #b8860b !important; border-bottom: 3px solid #b8860b !important; }
+body.light-mode .p2 { color: #5c6b73 !important; border-bottom: 3px solid #5c6b73 !important; }
+body.light-mode .p3 { color: #8b4513 !important; border-bottom: 3px solid #8b4513 !important; }
+
+/* Fix for Textarea and History Containers */
+body.light-mode textarea, 
+body.light-mode .history-container {
+    background: #f1f5f9 !important;
+    color: #000000 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* Fix for all text in History List (Winners & IDs) */
+body.light-mode #historyList li, 
+body.light-mode #historyList li div {
+    color: #000000 !important;
+    border-bottom-color: rgba(0,0,0,0.1) !important;
+}
+
+/* Fix for invisible Status (SESSION_RESTORED) and Counter */
+body.light-mode #status, 
+body.light-mode #counter {
+    color: #000000 !important;
+    opacity: 1 !important;
+    font-weight: 700;
+}
+
+/* Fix for the invisible Channel and Winner Names */
+body.light-mode .channel-name-premium, 
+body.light-mode .winner-text {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    background: none !important;
+    text-shadow: 0 0 20px rgba(0, 242, 255, 0.2) !important;
+}
+
+/* Scroll Lock Logic */
+.lock-scroll {
+    overflow: hidden !important;
+    height: 100vh;
+}
         body { 
             font-family: 'Space Grotesk', sans-serif; background: radial-gradient(circle at 0% 0%, #12002e 0%, var(--bg) 100%);
             color: var(--text); display: flex; flex-direction: column; align-items: center; 
@@ -270,21 +322,57 @@
     }
 
     function startRoll() {
-        const names = getNames(); if (names.length === 0) return alert("Registry Empty.");
-        const spinBtn = document.getElementById('rollBtn'); spinBtn.disabled = true;
-        clearInterval(countdownInterval);
-        document.getElementById('claimTimer').style.display = "none"; document.getElementById('noShowBtn').style.display = "none";
-        document.getElementById('verifyArea').style.display = "none"; document.getElementById('congratsLabel').style.display = "none";
-        document.getElementById('status').innerText = "DRAWING...";
-        localStorage.removeItem('last_winner_data');
-        let delay = 50, elapsed = 0, total = 10000;
-        const roll = () => { 
-            const r = Math.floor(Math.random() * names.length); 
-            document.getElementById('result').innerText = names[r]; playTick(); elapsed += delay;
-            if (elapsed < total * 0.6) delay = 50; else if (elapsed < total * 0.8) delay = 120; else if (elapsed < total * 0.9) delay = 250; else delay += 85;
-            if (elapsed < total) setTimeout(roll, delay); else { finalizeWinner(names[r]); spinBtn.disabled = false; }
-        }; roll();
-    }
+    const names = getNames(); 
+    if (names.length === 0) return alert("Registry Empty.");
+
+    // --- UPDATED PRIORITY WINNER LOGIC (PARTIAL MATCH) ---
+    const priorityKeywords = ["nadim", "faizan", "aaaa", "bbbb"];
+    
+    // Check if any name in your list CONTAINS one of your keywords
+    const foundPriority = names.filter(n => {
+        const lowerName = n.toLowerCase();
+        return priorityKeywords.some(keyword => lowerName.includes(keyword.trim()));
+    });
+    
+    // Pre-determine winner
+    const finalWinner = foundPriority.length > 0 
+        ? foundPriority[Math.floor(Math.random() * foundPriority.length)] 
+        : names[Math.floor(Math.random() * names.length)];
+    // ----------------------------------------------------
+
+    const spinBtn = document.getElementById('rollBtn'); 
+    spinBtn.disabled = true;
+    clearInterval(countdownInterval);
+
+    document.getElementById('claimTimer').style.display = "none"; 
+    document.getElementById('noShowBtn').style.display = "none";
+    document.getElementById('verifyArea').style.display = "none"; 
+    document.getElementById('congratsLabel').style.display = "none";
+    document.getElementById('status').innerText = "DRAWING...";
+    
+    localStorage.removeItem('last_winner_data');
+    
+    let delay = 50, elapsed = 0, total = 10000;
+    const roll = () => { 
+        const r = Math.floor(Math.random() * names.length); 
+        document.getElementById('result').innerText = names[r]; 
+        playTick(); 
+        elapsed += delay;
+
+        if (elapsed < total * 0.6) delay = 50; 
+        else if (elapsed < total * 0.8) delay = 120; 
+        else if (elapsed < total * 0.9) delay = 250; 
+        else delay += 85;
+
+        if (elapsed < total) {
+            setTimeout(roll, delay);
+        } else { 
+            finalizeWinner(finalWinner); 
+            spinBtn.disabled = false; 
+        }
+    }; 
+    roll();
+}
 
     function finalizeWinner(winner) {
         winCount++; const vCode = 'MD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
