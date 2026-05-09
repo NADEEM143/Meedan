@@ -64,6 +64,10 @@ body.light-mode .winner-text {
     overflow: hidden !important;
     height: 100vh;
 }
+#adminPanel, #profilePanel {
+ max-height: 85vh;
+overflow-y: auto;
+}
         body { 
             font-family: 'Space Grotesk', sans-serif; background: radial-gradient(circle at 0% 0%, #12002e 0%, var(--bg) 100%);
             color: var(--text); display: flex; flex-direction: column; align-items: center; 
@@ -263,14 +267,40 @@ body.light-mode .winner-text {
     function playTick() { if (audioCtx.state === 'suspended') audioCtx.resume(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
     function playAlert() { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(440, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 1); }
 
-    function toggleAdmin() { document.getElementById('adminPanel').style.display = (document.getElementById('adminPanel').style.display === 'none') ? 'block' : 'none'; }
-    function toggleProfile() { document.getElementById('profilePanel').style.display = (document.getElementById('profilePanel').style.display === 'none') ? 'block' : 'none'; if(document.getElementById('profilePanel').style.display === 'block') switchTab('day', document.querySelector('.board-tab')); }
+        function toggleAdmin() {
+        const el = document.getElementById('adminPanel');
+        const isOpening = (el.style.display === 'none' || el.style.display === '');
+        
+        el.style.display = isOpening ? 'block' : 'none';
+        if (isOpening) {
+            document.body.classList.add('lock-scroll');
+        } else {
+            if (document.getElementById('profilePanel').style.display !== 'block') {
+                document.body.classList.remove('lock-scroll');
+            }
+        }
+    }
+
+    function toggleProfile() {
+        const el = document.getElementById('profilePanel');
+        const isOpening = (el.style.display === 'none' || el.style.display === '');
+        
+        el.style.display = isOpening ? 'block' : 'none';
+
+        if (isOpening) {
+            document.body.classList.add('lock-scroll');
+            switchTab('day', document.querySelector('.board-tab'));
+        } else {
+            if (document.getElementById('adminPanel').style.display !== 'block') {
+                document.body.classList.remove('lock-scroll');
+            }
+        }
+    }
     
     function startDrag(e) { isDragging = true; const ev = e.type === 'touchstart' ? e.touches[0] : e; startX = ev.clientX - currentX; startY = ev.clientY - currentY; }
     function doDrag(e) { if (!isDragging) return; const ev = e.type === 'touchmove' ? e.touches[0] : e; currentX = ev.clientX - startX; currentY = ev.clientY - startY; applyManualAdjust(); }
     function stopDrag() { isDragging = false; }
     function applyManualAdjust() { const zoom = document.getElementById('zoomRange').value; const img = document.getElementById('cropPreviewImg'); img.style.width = zoom + '%'; img.style.transform = `translate(calc(-50% + ${currentX}px), calc(-50% + ${currentY}px))`; }
-
     function handleLogoUpload(input) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { pendingLogoData = e.target.result; pendingLogoRemoval = false; document.getElementById('removalPendingMsg').style.display = 'none'; document.getElementById('cropPreviewImg').src = e.target.result; document.getElementById('cropContainer').style.display = 'block'; currentX = 0; currentY = 0; applyManualAdjust(); }; reader.readAsDataURL(input.files[0]); } }
     function requestRemoveLogo() { pendingLogoRemoval = true; pendingLogoData = null; document.getElementById('cropContainer').style.display = 'none'; document.getElementById('removalPendingMsg').style.display = 'block'; }
 
