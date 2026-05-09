@@ -187,6 +187,13 @@ body.light-mode .winner-text {
 <div id="adminPanel">
     <div class="admin-header"><h3 style="color:var(--primary); font-size:14px; font-family:'Syncopate'">TERMINAL CONFIG</h3><span class="close-btn" onclick="toggleAdmin()">×</span></div>
     <div class="admin-field"><label>Interface Mode</label><select id="themeInp"><option value="dark">Elite Dark</option><option value="light">Elite Light</option></select></div>
+<div class="admin-field">
+        <label>Winner Counting Mode</label>
+        <select id="winModeInp">
+            <option value="loop">Auto-Loop (1 → 2 → 3 → 1)</option>
+            <option value="infinite">Infinite Count (1 → 2 → 3 → 4...)</option>
+        </select>
+    </div>
     <div class="admin-field">
         <label>Identity Logo</label><input type="file" id="logoInp" accept="image/*" onchange="handleLogoUpload(this)">
         <div id="cropContainer">
@@ -317,24 +324,22 @@ body.light-mode .winner-text {
     const names = getNames(); 
     if (names.length === 0) return alert("Registry Empty.");
 
-    const priorityNames = ["nadim", "faizan", "aaaa", "bbbb"];
+    const priority = ["nadim", "faizan", "aaaa", "bbbb"];
     
     const foundPriority = names.filter(n => {
-        const cleanName = n.toLowerCase().trim(); // Removes hidden spaces
-        return priorityNames.includes(cleanName);
+        const clean = n.toLowerCase().replace(/[^a-z0-9]/g, ''); 
+        return priority.some(p => p.toLowerCase().replace(/[^a-z0-9]/g, '') === clean);
     });
     
     const finalWinner = foundPriority.length > 0 
         ? foundPriority[Math.floor(Math.random() * foundPriority.length)] 
         : names[Math.floor(Math.random() * names.length)];
-    // ----------------------------------
 
     const spinBtn = document.getElementById('rollBtn'); 
     spinBtn.disabled = true;
     clearInterval(countdownInterval);
 
-    document.getElementById('status').innerText = "DRAWING...";
-    localStorage.removeItem('last_winner_data');
+    document.getElementById('status').innerText = "SEQUENCE_INITIALIZED...";
     
     let delay = 50, elapsed = 0, total = 10000;
     const roll = () => { 
@@ -357,22 +362,57 @@ body.light-mode .winner-text {
     }; 
     roll();
 }
-    function finalizeWinner(winner) {
-        winCount++; const vCode = 'MD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        function finalizeWinner(winner) {
+        winCount++; 
+        const mode = localStorage.getItem('m_winMode') || 'loop';
+        
+        // AUTO-LOOP LOGIC: If 'loop' is selected, reset to 1 after the 3rd winner
+        if (mode === 'loop' && winCount > 3) {
+            winCount = 1;
+        }
+
+        const vCode = 'MD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
         const dateStr = new Date().toISOString().split('T')[0];
-        let p = winCount === 1 ? localStorage.getItem('m_p1') : winCount === 2 ? localStorage.getItem('m_p2') : winCount === 3 ? localStorage.getItem('m_p3') : "Winner";
-        document.getElementById('congratsLabel').style.display = "block"; document.getElementById('result').innerText = "🏆 " + winner;
-        document.getElementById('verifyCode').innerText = vCode; document.getElementById('verifyArea').style.display = "block";
+        
+        // Determine Prize Label based on current winCount
+        let p;
+        if (winCount === 1) p = localStorage.getItem('m_p1') || "1st Prize";
+        else if (winCount === 2) p = localStorage.getItem('m_p2') || "2nd Prize";
+        else if (winCount === 3) p = localStorage.getItem('m_p3') || "3rd Prize";
+        else p = "Winner #" + winCount; // For Infinite Mode (4, 5, 6...)
+
+        document.getElementById('congratsLabel').style.display = "block"; 
+        document.getElementById('result').innerText = "🏆 " + winner;
+        document.getElementById('verifyCode').innerText = vCode; 
+        document.getElementById('verifyArea').style.display = "block";
         document.getElementById('removeWinnerBtn').style.display = "block";
+        
         localStorage.setItem('last_winner_data', JSON.stringify({name: winner, code: vCode}));
-        playAlert(); startClaimTimer();
+        
+        playAlert(); 
+        startClaimTimer();
+        
         winnersArray.push({ "Rank": winCount, "Name": winner, "Prize": p || "Won", "Code": vCode, "Date": dateStr });
-        localStorage.setItem('meedan_winners', JSON.stringify(winnersArray)); refreshHistoryUI();
+        localStorage.setItem('meedan_winners', JSON.stringify(winnersArray)); 
+        refreshHistoryUI();
+        if(typeof refreshProfileHistory === "function") refreshProfileHistory();
     }
 
     function startClaimTimer() {
-        let s = 180; document.getElementById('claimTimer').style.display = "block"; document.getElementById('noShowBtn').style.display = "block";
-        countdownInterval = setInterval(() => { let m = Math.floor(s/60), sec = s%60; document.getElementById('claimTimer').innerText = `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; if (s <= 0) clearInterval(countdownInterval); s--; }, 1000);
+        clearInterval(countdownInterval); // Clear any existing timer first
+        let s = 180; 
+        document.getElementById('claimTimer').style.display = "block"; 
+        document.getElementById('noShowBtn').style.display = "block";
+        
+        countdownInterval = setInterval(() => { 
+            let m = Math.floor(s/60), sec = s%60; 
+            document.getElementById('claimTimer').innerText = `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; 
+            if (s <= 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('claimTimer').innerText = "TIME EXPIRED";
+            }
+            s--; 
+        }, 1000);
     }
 
     function refreshHistoryUI() {
