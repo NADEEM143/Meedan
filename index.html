@@ -188,7 +188,7 @@ overflow-y: auto;
 <div class="donate-header">
     <span class="profile-trigger" onclick="toggleProfile()">👤</span>
     <span id="donateTextDisp">📢 PARTICIPATE: WITH RS 1 ONLY</span> 
-    <span class="upi-id" id="upiDisp">nadimsbi147@ybl</span>
+    <span class="upi-id" id="upiDisp">example@ybl</span>
     <span class="admin-trigger" onclick="toggleAdmin()">⚙️</span>
 </div>
 
@@ -316,7 +316,7 @@ overflow-y: auto;
     function loadSettings() {
         const theme = localStorage.getItem('m_theme') || 'dark'; document.body.className = theme + '-mode';
         document.getElementById('donateTextDisp').innerText = localStorage.getItem('m_head') || "📢 PARTICIPATE: WITH RS 1 ONLY";
-        document.getElementById('upiDisp').innerText = localStorage.getItem('m_upi') || "nadimsbi147@ybl";
+        document.getElementById('upiDisp').innerText = localStorage.getItem('m_upi') || "example@ybl";
         document.getElementById('p1Disp').innerText = localStorage.getItem('m_p1') || "Rs 51";
         document.getElementById('p2Disp').innerText = localStorage.getItem('m_p2') || "Rs 31";
         document.getElementById('p3Disp').innerText = localStorage.getItem('m_p3') || "Rs 25";
